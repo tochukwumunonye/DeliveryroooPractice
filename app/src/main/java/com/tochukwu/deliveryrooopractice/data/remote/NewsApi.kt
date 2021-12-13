@@ -20,6 +20,7 @@ interface NewsApi {
     suspend fun getBreakingNews(): NewsResponse
 
 
+
 }
 
 

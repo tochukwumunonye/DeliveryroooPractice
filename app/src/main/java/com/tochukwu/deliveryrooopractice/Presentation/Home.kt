@@ -1,7 +1,10 @@
 package com.tochukwu.deliveryrooopractice.Presentation
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -9,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tochukwu.deliveryrooopractice.Core.Adapter
 import com.tochukwu.deliveryrooopractice.R
 import com.tochukwu.deliveryrooopractice.databinding.ActivityHomeBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class Home : Fragment(R.layout.activity_home){
 
     private val viewModel: NewsViewModel by viewModels()
@@ -28,7 +33,7 @@ class Home : Fragment(R.layout.activity_home){
         val homeAdapter = Adapter()
 
         binding?.apply {
-            rvAllNews?.apply {
+            rvAllNews.apply {
                 adapter = homeAdapter
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(true)
@@ -40,8 +45,24 @@ class Home : Fragment(R.layout.activity_home){
                 viewModel.state.collectLatest{ result->
                     when(result){
                         is NewsViewModel.NewsEvent.Success ->{
+                            binding!!.homePb.isVisible = false
                             homeAdapter.submitList(result.art)
                         }
+                        is NewsViewModel.NewsEvent.Failure->{
+                            binding!!.homePb.isVisible = false
+                            result.errorText?.let { message ->
+                                Toast.makeText(
+                                    activity,
+                                    "An Error occured: $message",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                            is NewsViewModel.NewsEvent.Loading -> {
+                                binding!!.homePb.isVisible = true
+                            }
+                        else -> Unit
+
                     }
 
 

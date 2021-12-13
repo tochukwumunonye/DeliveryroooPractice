@@ -2,73 +2,86 @@ package com.tochukwu.deliveryrooopractice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.tochukwu.deliveryrooopractice.databinding.ActivityMainBinding
+import com.tochukwu.deliveryrooopractice.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.apply{
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+
+            bottomNavigationView.apply{
+                background = null;
+                setupWithNavController(navHostFragment.findNavController())
+            }
+        }
     }
+
+
 }
+
 
 
 
 /**
+private lateinit var binding: ActivityMainBinding
 
-class UserAdapter @Inject constructor(
-private val glide: RequestManager
-): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+override fun onCreate(savedInstanceState: Bundle?) {
+super.onCreate(savedInstanceState)
+binding = ActivityMainBinding.inflate(layoutInflater)
+setContentView(binding.root)
 
-class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-val ivProfilePicture: ImageView = itemView.ivProfileImage
-val tvUsername: TextView = itemView.tvUsername
+
+binding.apply {
+val navHostFragment =
+supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+
+bottomNavigationView.apply {
+background = null
+menu.getItem(2).isEnabled = false
+setupWithNavController(navHostFragment.findNavController())
+setOnNavigationItemReselectedListener { Unit }
 }
-private val diffCallback = object: DiffUtil.ItemCallback<User>() {
-override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
-return oldItem.hashCode() == newItem.hashCode()
-}
 
-override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
-return oldItem.uid == newItem.uid
-}
-}
-
-private val differ = AsyncListDiffer(this, diffCallback)
-
-var users: List<User>
-get() = differ.currentList
-set(value) = differ.submitList(value)
-
-override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-return UserViewHolder(
-LayoutInflater.from(parent.context).inflate(
-R.layout.item_user,
-parent,false
-)
+fabNewPost.setOnClickListener {
+navHostFragment.findNavController().navigate(
+R.id.globalActionToCreatePostFragment
 )
 }
-
-override fun getItemCount(): Int {
-return users.size
-}
-
-override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-val user = users[position]
-holder.apply{
-glide.load(user.profilePictureUrl).into(ivProfilePicture)
-tvUsername.text = user.username
-itemView.setOnClickListener {
-onUserClickListener?.let{click ->
-click(user)
-
-}
-}
 }
 }
 
-private var onUserClickListener: ((User) -> Unit)? = null
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+when(item.itemId){
+R.id.miLogout -> {
+FirebaseAuth.getInstance().signOut()
+Intent(this, AuthActivity::class.java).also {
+startActivity(it)
+}
+finish()
+}
+}
+return super.onOptionsItemSelected(item)
+}
 
-fun setOnUserClickListener(listener: (User) -> Unit) {
-onUserClickListener = listener
+override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+menuInflater.inflate(R.menu.main_menu, menu)
+return super.onCreateOptionsMenu(menu)
 }
+
+
 }
-        **/
+**/

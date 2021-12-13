@@ -5,4 +5,8 @@
         android:title="@string/homefragment"
         android:icon="@drawable/ic_home"/>
 
+    <item android:id = "@+id/detailClass"
+        android:title="DetailFragment"
+        android:icon="@drawable/ic_detailzz"/>
+
 </menu>

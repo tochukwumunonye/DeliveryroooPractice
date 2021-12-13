@@ -8,8 +8,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -17,12 +20,49 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    /**
+     *
+    @Singleton
+    @Provides
+    OkHttpClient providesOkHttpClient() {
+    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    return new OkHttpClient.Builder()
+    .readTimeout(30, TimeUnit.SECONDS)
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .writeTimeout(30, TimeUnit.SECONDS)
+    .addInterceptor(logging)
+    .build();
+
+    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+    return OkHttpClient.Builder()
+    .addInterceptor(httpLoggingInterceptor)
+    .build()
+
+     */
+
     @Provides
     @Singleton
-    fun provideApi(): NewsApi {
+    fun provideOkhttpClient(): OkHttpClient{
+       val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return OkHttpClient.Builder()
+            .readTimeout(30,  TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(logging)
+            .build()
+    }
+
+
+
+    @Provides
+    @Singleton
+    fun provideApi(okHttpClient: OkHttpClient): NewsApi {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
             .build()
             .create(NewsApi::class.java)
     }

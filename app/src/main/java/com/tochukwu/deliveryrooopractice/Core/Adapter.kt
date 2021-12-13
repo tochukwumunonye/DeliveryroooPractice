@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.tochukwu.deliveryrooopractice.R
 import com.tochukwu.deliveryrooopractice.data.model.Article
 import com.tochukwu.deliveryrooopractice.databinding.ItemArticleNewsBinding
-import kotlinx.android.synthetic.main.item_article_news.view.*
+
 
 class Adapter : androidx.recyclerview.widget.ListAdapter<Article, Adapter.ArticleViewHolder>(
     Article_COMPARATOR) {
@@ -24,7 +24,11 @@ class Adapter : androidx.recyclerview.widget.ListAdapter<Article, Adapter.Articl
     }
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val currentItem = getItem(position)
+
+        if (currentItem != null) {
+            holder.bind(currentItem)
+        }
     }
 
 
