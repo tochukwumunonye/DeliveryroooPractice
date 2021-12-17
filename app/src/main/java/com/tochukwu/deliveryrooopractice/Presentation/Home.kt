@@ -11,12 +11,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tochukwu.deliveryrooopractice.Core.Adapter
 import com.tochukwu.deliveryrooopractice.R
+import com.tochukwu.deliveryrooopractice.data.remote.NewsApi
 import com.tochukwu.deliveryrooopractice.databinding.ActivityHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class Home : Fragment(R.layout.activity_home){
+class Home: Fragment(R.layout.activity_home){
+
 
     private val viewModel: NewsViewModel by viewModels()
 
@@ -28,12 +31,13 @@ class Home : Fragment(R.layout.activity_home){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getNews()
 
         currentBinding = ActivityHomeBinding.bind(view)
         val homeAdapter = Adapter()
 
         binding?.apply {
-            rvAllNews.apply {
+            recycler.apply {
                 adapter = homeAdapter
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(true)
@@ -41,15 +45,22 @@ class Home : Fragment(R.layout.activity_home){
             }
 
 
+
+
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+
+
                 viewModel.state.collectLatest{ result->
                     when(result){
                         is NewsViewModel.NewsEvent.Success ->{
-                            binding!!.homePb.isVisible = false
-                            homeAdapter.submitList(result.art)
+                            binding!!.progressbar.isVisible = false
+                            binding!!.textViewError.isVisible = false
+                            binding!!.buttonRetry.isVisible = false;
+                            homeAdapter.submitList(result.art.networks.applicable)
                         }
                         is NewsViewModel.NewsEvent.Failure->{
-                            binding!!.homePb.isVisible = false
+                            binding!!.progressbar.isVisible = false
+
                             result.errorText?.let { message ->
                                 Toast.makeText(
                                     activity,
@@ -57,9 +68,12 @@ class Home : Fragment(R.layout.activity_home){
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
+
                         }
                             is NewsViewModel.NewsEvent.Loading -> {
-                                binding!!.homePb.isVisible = true
+                                binding!!.textViewError.isVisible = false
+                                binding!!.buttonRetry.isVisible = false;
+                                binding!!.progressbar.isVisible = true
                             }
                         else -> Unit
 
@@ -70,7 +84,16 @@ class Home : Fragment(R.layout.activity_home){
             }
         }
 
+
+
     }
+
+
+    /**
+    override fun onStart() {
+        super.onStart()
+        viewModel.onStart()
+    } **/
 }
 
 

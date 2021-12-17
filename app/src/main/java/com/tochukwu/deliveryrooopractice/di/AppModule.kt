@@ -20,26 +20,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    /**
-     *
-    @Singleton
-    @Provides
-    OkHttpClient providesOkHttpClient() {
-    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-    return new OkHttpClient.Builder()
-    .readTimeout(30, TimeUnit.SECONDS)
-    .connectTimeout(30, TimeUnit.SECONDS)
-    .writeTimeout(30, TimeUnit.SECONDS)
-    .addInterceptor(logging)
-    .build();
 
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-    return OkHttpClient.Builder()
-    .addInterceptor(httpLoggingInterceptor)
-    .build()
-
-     */
 
     @Provides
     @Singleton
@@ -60,7 +41,7 @@ object AppModule {
     @Singleton
     fun provideApi(okHttpClient: OkHttpClient): NewsApi {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl("https://raw.githubusercontent.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

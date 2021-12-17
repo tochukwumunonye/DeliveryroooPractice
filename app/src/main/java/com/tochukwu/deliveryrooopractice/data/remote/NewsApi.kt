@@ -1,7 +1,6 @@
 package com.tochukwu.deliveryrooopractice.data.remote
 
-import com.tochukwu.deliveryrooopractice.Core.Constants.Companion.API_KEY
-import com.tochukwu.deliveryrooopractice.data.model.NewsResponse
+import com.tochukwu.deliveryrooopractice.data.model.Payment
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -15,13 +14,9 @@ interface NewsApi {
         //const val API_KEY = BuildConfig.NEWS_API_ACCESS_KEY
     }
 
-    @Headers("X-Api-Key: $API_KEY")
-    @GET("top-headlines?country=us&pageSize=100")
-    suspend fun getBreakingNews(): NewsResponse
+    @GET("optile/checkout-android/develop/shared-test/lists/listresult.json")
+    suspend fun getPayment(): Payment
 
 
 
 }
-
-
-

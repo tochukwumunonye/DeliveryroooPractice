@@ -9,21 +9,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tochukwu.deliveryrooopractice.R
-import com.tochukwu.deliveryrooopractice.data.model.Article
+import com.tochukwu.deliveryrooopractice.data.model.Applicable
+
 import com.tochukwu.deliveryrooopractice.databinding.ItemArticleNewsBinding
 
 
-class Adapter : androidx.recyclerview.widget.ListAdapter<Article, Adapter.ArticleViewHolder>(
+class Adapter : androidx.recyclerview.widget.ListAdapter<Applicable, Adapter.ApplicableViewHolder>(
     Article_COMPARATOR) {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicableViewHolder {
         val binding = ItemArticleNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return ArticleViewHolder(binding)
+        return ApplicableViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ApplicableViewHolder, position: Int) {
         val currentItem = getItem(position)
 
         if (currentItem != null) {
@@ -32,26 +33,24 @@ class Adapter : androidx.recyclerview.widget.ListAdapter<Article, Adapter.Articl
     }
 
 
-    inner class ArticleViewHolder(private val binding: ItemArticleNewsBinding) :RecyclerView.ViewHolder(binding.root) {
+    inner class ApplicableViewHolder(private val binding: ItemArticleNewsBinding) :RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(article: Article) {
+        fun bind(app: Applicable) {
             binding.apply {
-                Glide.with(itemView).load(article.urlToImage).into(ivArticleImage)
-                tvSource.text = article.source?.name
-                tvTitle.text = article.title
-                tvDescription.text = article.description
-                tvPublishedAt.text = article.publishedAt
+                Glide.with(itemView).load(app.links.logo).into(logo)
+                paymentName.text = app.label
+
             }
 
         }
 
     }
     companion object {
-        private val Article_COMPARATOR = object : DiffUtil.ItemCallback<Article>() {
-            override fun areItemsTheSame(oldItem: Article, newItem: Article) =
-                oldItem.id == newItem.id
+        private val Article_COMPARATOR = object : DiffUtil.ItemCallback<Applicable>() {
+            override fun areItemsTheSame(oldItem: Applicable, newItem: Applicable) =
+                oldItem == newItem
 
-            override fun areContentsTheSame(oldItem: Article, newItem: Article) =
+            override fun areContentsTheSame(oldItem: Applicable, newItem: Applicable) =
                 oldItem == newItem
         }
 
